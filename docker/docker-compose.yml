@@ -1,0 +1,78 @@
+version: '3'
+services:
+
+  #PHP Service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: phpdockerio/php72-fpm
+    container_name: app
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+    working_dir: /var/www
+    volumes:
+      - ../laravel:/var/www
+      - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    depends_on:
+      - cache
+      - webserver
+      - db
+    networks:
+      - app-network
+  
+  #Redis Cache
+  cache:
+    image: redis:3.0
+
+  #Nginx Service
+  webserver:
+    image: nginx:alpine
+    container_name: webserver
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ../laravel:/var/www
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - app-network
+
+  #MySQL Service
+  db:
+    image: mysql:5.7.22
+    container_name: db
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "53306:3306"
+    environment:
+      MYSQL_DATABASE: develop_ntdev_blog
+      MYSQL_ROOT_PASSWORD: ntdev@123
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user
+    command: >
+      --character-set-server=utf8
+      --collation-server=utf8_unicode_ci
+    volumes:
+      - dbdata:/var/lib/mysql/
+      - ./mysql/my.cnf:/etc/mysql/my.cnf
+    networks:
+      - app-network
+
+#Volumes
+volumes:
+  dbdata:
+    driver: local
+
+#Docker Networks
+networks:
+  app-network:
+    driver: bridge
