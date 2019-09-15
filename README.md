@@ -23,11 +23,11 @@ Run file `./start-docker-compose.sh` or change directory:
 Run file `./stop-docker-compose.sh`
 * Initializing configuration Laravel:
 ```
-	$ cd docker
-    $ docker-compose exec app bash
-    $ cp .env.example .env
-    $ composer install
-    $ php artisan key:generate
+$ cd docker
+$ docker-compose exec app bash
+$ cp .env.example .env
+$ composer install
+$ php artisan key:generate
 ```
 * Migrate database:
 Edit  `/var/www/.env`
@@ -40,9 +40,9 @@ DB_USERNAME=root
 DB_PASSWORD=ntdev@123
 ```
 Run migration:
-	
-		$  php artisan migrate
-
+```
+$  php artisan migrate
+```
 Result:
 
 	Migration table created successfully.
@@ -60,13 +60,13 @@ Result:
 
 ### That's it. Let's go into some interesting information!
 * How to check the webpages are running ok or not? Try it
-
-        http://your_server_ip
-
+```
+http://your_server_ip
+```
 * How to see which services are running? Run it:
-        
-        $ docker-compose ps
-
+```        
+$ docker-compose ps
+```
 ### Remote MySQL
 ```
 DB_HOST: 127.0.0.1 (or your IP address)
@@ -91,3 +91,6 @@ OK (2 tests, 2 assertions)
 ```
 **Notes**:
 After installing Laravel, you may need to configure some permissions. Directories within the  `storage` and the `bootstrap/cache` directories should be writable by your web server or Laravel will not run.
+
+You can also create a vagrant virtual machine, then run the docker compose in vagrant 
+[Varant centos](https://github.com/alvinnguyen562/vagrant-centos-7)
